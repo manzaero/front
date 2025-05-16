@@ -1,0 +1,143 @@
+{
+  "users": [
+    {
+      "id": "2255",
+      "login": "manza",
+      "email": "manza@mail.ru",
+      "password": "manza123",
+      "role_id": 2
+    },
+    {
+      "id": "ad34",
+      "login": "admin",
+      "email": "admin@mail.ru",
+      "password": "admin123",
+      "role_id": 0
+    }
+  ],
+  "roles": [
+    {
+      "id": "0",
+      "name": "Administrator"
+    },
+    {
+      "id": "1",
+      "name": "Moderator"
+    },
+    {
+      "id": "2",
+      "name": "Client"
+    },
+    {
+      "id": "3",
+      "name": "Reader"
+    }
+  ],
+  "categories": [
+    {
+      "id": "1",
+      "name": "House Plants",
+      "category": "house_plants"
+    },
+    {
+      "id": "2",
+      "name": "Potter Plants",
+      "category": "potter_plants"
+    },
+    {
+      "id": "3",
+      "name": "Seeds",
+      "category": "seeds"
+    },
+    {
+      "id": "4",
+      "name": "Succulents",
+      "category": "succulents"
+    }
+  ],
+  "products": [
+    {
+      "id": "001",
+      "name": "Barberton Daisys",
+      "image_url": "barbertonDaisy.png",
+      "product_description": "The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. ",
+      "count": 18,
+      "price": 152,
+      "category": "house_plants"
+    },
+    {
+      "id": "002",
+      "name": "Angel Wing Begonia",
+      "image_url": "angelWingBegonia.png",
+      "product_description": "Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. ",
+      "count": 32,
+      "price": 169,
+      "category": "potter_plants"
+    },
+    {
+      "id": "003",
+      "name": "African Violet",
+      "image_url": "africanViolet.png",
+      "product_description": "The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. ",
+      "count": 39,
+      "price": 195,
+      "category": "succulents"
+    },
+    {
+      "id": "004",
+      "name": "Beach Spider Lily",
+      "image_url": "beachSpiderLily.png",
+      "product_description": "The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "count": 28,
+      "price": 129,
+      "category": "potter_plants"
+    },
+    {
+      "id": "005",
+      "name": "Blushing Bromeliad.",
+      "image_url": "blushingBromeliad.png",
+      "product_description": "The benefits of houseplants are endless. In addition to cleaning the air of harmful toxins, they can help to improve your mood, reduce stress and provide you with better sleep. Fill every room of your home with houseplants and their restorative qualities will improve your life.",
+      "count": 58,
+      "price": 138,
+      "category": "house_plants"
+    },
+    {
+      "id": "006",
+      "name": "Aluminum Plant",
+      "image_url": "aluminumPlant.png",
+      "product_description": "The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. Lorem ipsum dolor sit amet, consectetur adipiscing elit.",
+      "count": 25,
+      "price": 179,
+      "category": "seeds"
+    },
+    {
+      "id": "007",
+      "name": "Bird's Nest Fern",
+      "image_url": "birdsNestFern.png",
+      "product_description": "Pellentesque aliquet, sem eget laoreet ultrices, ipsum metus feugiat sem, quis fermentum turpis eros eget velit. Donec ac tempus ante. Fusce ultricies massa massa. Fusce aliquam, purus eget sagittis vulputate, sapien libero hendrerit est, sed commodo augue nisi non neque. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed tempor, lorem et placerat vestibulum, metus nisi posuere nisl, in accumsan elit odio quis mi. Cras neque metus, consequat et blandit et, luctus a nunc. Etiam gravida vehicula tellus, in imperdiet ligula euismod eget. The ceramic cylinder planters come with a wooden stand to help elevate your plants off the ground. ",
+      "count": 25,
+      "price": 170,
+      "category": "house_plants"
+    }
+  ],
+  "cart": [
+    {
+      "id": "2255",
+      "items": [
+        {
+          "id": "006",
+          "name": "Aluminum Plant",
+          "price": 179,
+          "image_url": "aluminumPlant",
+          "quantity": 4
+        }
+      ],
+      "sum": 716
+    },
+    {
+      "id": "ad34",
+      "items": [],
+      "sum": 0
+    }
+  ]
+}
