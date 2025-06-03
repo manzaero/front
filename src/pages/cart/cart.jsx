@@ -1,34 +1,63 @@
 import styled from "styled-components";
-import {Button} from "../../components/index.js";
-import {useDispatch, useSelector} from "react-redux";
-import {selectCart, selectorCartSum} from "../../selectors/index.js";
+import { Button } from "../../components/index.js";
+import { useDispatch, useSelector } from "react-redux";
+import { selectCart, selectorCartSum } from "../../selectors/index.js";
 import {
     clearCart,
     decrementFromCart,
     incrementFromCart,
     removeToCart
 } from "../../action/index.js";
-import {productImages} from "../../assets/product-image/index.js";
-import {icons} from "../../assets/icon/index.js";
+import { productImages } from "../../assets/product-image/index.js";
+import { icons } from "../../assets/icon/index.js";
+import { useEffect } from "react";
+import { request } from "../../utils/request.js";
+import { setCart } from "../../action/set-cart.js";
 
-
-const CartContainer = ({className}) => {
+const CartContainer = ({ className }) => {
     const dispatch = useDispatch();
     const cart = useSelector(selectCart);
     const sum = useSelector(selectorCartSum);
 
+    console.log(cart)
+
+    const items = Array.isArray(cart?.items) ? cart.items : [];
+
     const handleClick = () => {
-        dispatch(clearCart())
-    }
+        dispatch(clearCart());
+    };
 
     const decrementProductCount = (id) => {
-        dispatch(decrementFromCart(id))
-        console.log(id)
-    }
+        dispatch(decrementFromCart(id));
+    };
 
     const incrementProductCount = (id) => {
-        dispatch(incrementFromCart(id))
-    }
+        dispatch(incrementFromCart(id));
+    };
+
+    useEffect(() => {
+        const userId = localStorage.getItem('userId');
+        if (!userId) {
+            console.log('User not authorized, skipping cart load');
+            return;
+        }
+
+        async function loadCart() {
+            const { error, result } = await request('/cart', 'GET');
+            if (error) {
+                console.error('loading cart', error);
+                return;
+            }
+
+            dispatch(setCart({
+                items: result.items || [],
+                sum: result.sum ?? 0,
+            }));
+        }
+
+        loadCart().catch(console.error);
+    }, [dispatch]);
+
 
 
     return (
@@ -46,12 +75,14 @@ const CartContainer = ({className}) => {
                     </thead>
                     <tbody>
                     {
-                        cart.length !== 0 ? cart.map((item) => (
+                        items.length !== 0 ? items.map((item) => (
                             <tr className="product-data" key={item.id}>
+                                {console.log(item.id)}
                                 <td className="product">
                                     <img
-                                        src={productImages[item.image_url.replace('.png', '')]}
-                                        alt={item.name}/>
+                                        src={productImages[item.imageUrl?.replace('.png', '')] || ''}
+                                        alt={item.name}
+                                    />
                                     <div>
                                         <p>{item.name}</p>
                                     </div>
@@ -59,25 +90,22 @@ const CartContainer = ({className}) => {
                                 <td className="product-price">${item.price}.00</td>
                                 <td className="td-quantity">
                                     <button className="quantity-btn"
-                                            onClick={() => decrementProductCount(item.id)}>-
-                                    </button>
-                                    <span
-                                        className="quantity">{item.quantity}</span>
+                                            onClick={() => decrementProductCount(item.id)}>-</button>
+                                    <span className="quantity">{item.quantity}</span>
                                     <button className="quantity-btn"
-                                            onClick={() => incrementProductCount(item.id)}>+
-                                    </button>
+                                            onClick={() => incrementProductCount(item.id)}>+</button>
                                 </td>
                                 <td className="total-price">${item.price * item.quantity}.00</td>
                                 <td>
                                     <button className="delete-btn"
                                             onClick={() => dispatch(removeToCart(item.id))}>
-                                        <img src={icons.delete} alt=""/>
+                                        <img src={icons.delete} alt="Delete" />
                                     </button>
                                 </td>
                             </tr>
                         )) : (
                             <tr>
-                                <td className="product-empty">Cart is empty</td>
+                                <td className="product-empty" colSpan={5}>Cart is empty</td>
                             </tr>
                         )
                     }
@@ -85,22 +113,19 @@ const CartContainer = ({className}) => {
                 </table>
                 <div className="product-total">
                     <h4>Cart total</h4>
-
                     <div className="cart-total">
                         <p>Subtotal:</p>
                         <span>${sum}.00</span>
                     </div>
                     <div className="btn-container">
-                        <Button children={"Buy"} width={300}/>
-                        <Button onClick={handleClick} children={"Clear"}
-                                width={300}/>
+                        <Button children={"Buy"} width={300} />
+                        <Button onClick={handleClick} children={"Clear"} width={300} />
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
-
+    );
+};
 export const Cart = styled(CartContainer)`
     .product-list {
         width: 100%;

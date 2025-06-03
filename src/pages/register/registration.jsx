@@ -1,7 +1,6 @@
 import * as yup from 'yup';
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {server} from "../../bff/index.js";
 import {useState} from "react";
 import styled from "styled-components";
 import {AuthFromError, Button, Input} from "../../components/index.js";
@@ -9,6 +8,7 @@ import {NavLink, useNavigate} from "react-router-dom";
 import {ACTION_TYPE, setUser} from "../../action/index.js";
 import {useDispatch} from "react-redux";
 import {useResetForm} from "../../hooks/index.js";
+import {request} from "../../utils/request.js";
 
 
 const regFromSchema = yup.object().shape({
@@ -55,13 +55,19 @@ const RegistrationContainer = ({className}) => {
 
     const onSubmit = ({login, email, password}) => {
         dispatch({type: ACTION_TYPE.CLEAR_CART})
-        server.register(login, email, password)
-            .then(({error, result}) => {
+        request('/register', 'POST', {name: login, email, password})
+            .then(({error, user}) => {
+                console.log(user)
                 if (error) {
                     setServerError(`Error request: ${error}`);
                     return;
                 }
-                dispatch(setUser(result))
+                dispatch(setUser({
+                    id: user._id,
+                    login: user.name,
+                    email: user.email,
+                    roleId: user.role,
+                }))
                 nav('/')
             })
 

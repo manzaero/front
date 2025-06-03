@@ -6,33 +6,44 @@ export const useLoadData = (dispatch, {
     setLoadingProducts,
     setLoadingCategories,
     setErrorLoadProducts,
-    setErrorLoadCategories
+    setErrorLoadCategories,
+    page = 1,
+    limit = 6,
+    search = '',
 }) => {
     useEffect(() => {
-        server.loadProducts().then(({error, result}) => {
+        server.loadProducts({ page, limit, search }).then(({ error, result }) => {
+
             if (error) {
                 setErrorLoadProducts(`Product loading error: ${error}`);
                 return;
             }
-            if (Array.isArray(result)) {
-                dispatch(loadProducts(result));
+
+            if (result && Array.isArray(result.products)) {
+                dispatch(loadProducts(result.products, result.data));
             } else {
-                console.error("Unexpected data structure:", result);
+                console.error("Unexpected product data structure:", result);
+                setErrorLoadProducts("Invalid product data");
             }
             setLoadingProducts(false);
+
         });
 
-        server.loadCategories().then(({error, result}) => {
+        server.loadCategories().then(({ error, result }) => {
             if (error) {
                 setErrorLoadCategories(`Categories loading error: ${error}`);
                 return;
             }
+
             if (Array.isArray(result)) {
                 dispatch(loadCategories(result));
+            } else if (Array.isArray(result?.data)) {
+                dispatch(loadCategories(result.data));
             } else {
-                console.error("Unexpected data structure:", result);
+                console.error("Unexpected category data structure:", result);
+                setErrorLoadCategories("Invalid category data");
             }
             setLoadingCategories(false);
         });
-    }, [dispatch])
-}
+    }, [dispatch, page, limit, search]);
+};

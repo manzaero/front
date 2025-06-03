@@ -27,7 +27,6 @@ const Pages = styled.div`
 `
 
 export const Shop = () => {
-
     return (
         <AppColumn>
             <Header/>

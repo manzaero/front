@@ -3,7 +3,7 @@ import {generateDate} from "../generate-date.js";
 export const addUser = async (login, email, password) => {
     localStorage.removeItem('cart')
 
-    const res = await fetch('http://localhost:3005/users', {
+    const res = await fetch('/users', {
         method: 'POST', headers: {
             'Content-Type': 'application/json; charset=utf-8'
         }, body: JSON.stringify({
@@ -18,7 +18,7 @@ export const addUser = async (login, email, password) => {
     const newUser = await res.json()
 
 
-    await fetch('http://localhost:3005/cart', {
+    await fetch('/cart', {
         method: 'POST', headers: {
             'Content-Type': 'application/json; charset=utf-8'
         },

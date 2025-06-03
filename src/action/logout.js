@@ -1,9 +1,9 @@
 import {ACTION_TYPE} from "./action-type.js";
-import {server} from "../bff/index.js";
+import {request} from "../utils/request.js";
 
-export const logout = (session) => async (dispatch) => {
+export const logout = () => async (dispatch) => {
     localStorage.removeItem("cart");
-    await server.logout(session)
+    await request('/logout', 'POST')
     dispatch({
         type: ACTION_TYPE.LOGOUT,
     })

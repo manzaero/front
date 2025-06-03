@@ -6,7 +6,6 @@ import {
     selectCart,
     selectUserName,
     selectUserRole,
-    selectUserSession
 } from "../../../selectors/index.js";
 import {ROLE, useUserRole} from "../../../constants/index.js";
 import {logout, setSearchProduct} from "../../../action/index.js";
@@ -17,10 +16,9 @@ const ControlPanelContainer = ({className}) => {
     const cart = useSelector(selectCart)
     const roleId = useSelector(selectUserRole)
     const login = useSelector(selectUserName);
-    const session = useSelector(selectUserSession)
     const dispatch = useDispatch();
 
-    console.log(roleId)
+    const items = Array.isArray(cart) ? cart : cart?.items ?? [];
 
     const {value, onChange} = useDebounceInput((e) => {
         dispatch(setSearchProduct(e))
@@ -37,7 +35,7 @@ const ControlPanelContainer = ({className}) => {
         {roleId === 3 ? null : useUserRole &&
             <Link className='control-cart' to='/cart'>
                 <img src={icons.cart} alt="cart"/>
-                <div>{cart.length}</div>
+                <div>{items.length}</div>
             </Link>}
         {roleId === ROLE.GUEST ?
             (<Link className="control-button" to='/signin'>
@@ -45,7 +43,7 @@ const ControlPanelContainer = ({className}) => {
                 <div>SignIn</div>
             </Link>) :
             (<Link className='control-button' to='/'
-                   onClick={() => dispatch(logout(session))}>
+                   onClick={() => dispatch(logout())}>
                 <img src={icons.logout} alt=""/>
                 <div>{login}</div>
             </Link>)}

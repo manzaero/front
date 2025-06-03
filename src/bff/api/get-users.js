@@ -1,3 +1,3 @@
 export const getUsers = () =>
-    fetch('http://localhost:3005/users')
+    fetch('/users')
         .then(loadedUsers => loadedUsers.json())

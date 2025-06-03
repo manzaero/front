@@ -7,7 +7,7 @@ export const checkoutCart = () => async (dispatch, getState) => {
         return
     }
     try {
-        const response = await fetch('localhost:3005/checkout', {
+        const response = await fetch('/checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

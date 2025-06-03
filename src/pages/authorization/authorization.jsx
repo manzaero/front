@@ -1,7 +1,6 @@
 import * as yup from 'yup';
 import {useForm} from "react-hook-form";
 import {yupResolver} from "@hookform/resolvers/yup";
-import {server} from "../../bff/index.js";
 import {useState} from "react";
 import styled from "styled-components";
 import {Button, Input} from "../../components/index.js";
@@ -10,6 +9,7 @@ import {setUser} from "../../action/index.js";
 import {useDispatch} from "react-redux";
 import {AuthFromError} from "../../components/";
 import {useResetForm} from "../../hooks/index.js";
+import {request} from "../../utils/request.js";
 
 const authFromSchema = yup.object().shape({
     email: yup.string()
@@ -43,13 +43,29 @@ const AuthorizationContainer = ({className}) => {
     const [serverError, setServerError] = useState(null)
 
     const onSubmit = ({email, password}) => {
-        server.authorize(email, password)
+        request('/login', 'POST', {email, password})
             .then(({error, result}) => {
+                console.log(result)
                 if (error) {
                     setServerError(`Error request: ${error}`);
                     return;
                 }
-                dispatch(setUser(result))
+                const user = result.user
+
+                console.log('USER OBJECT:', user);
+                console.log('user.id:', user.id);
+
+                localStorage.setItem('userId', user.id)
+
+                console.log('SAVED userId:', localStorage.getItem('userId'));
+
+
+                dispatch(setUser({
+                    id: user.id,
+                    login: user.name,
+                    email: user.email,
+                    roleId: user.role,
+                }))
                 nav('/')
             })
 

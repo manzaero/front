@@ -1,7 +1,7 @@
 import {generateDate} from "../generate-date.js";
 
 export const createProduct = async (product) => {
-    const res = await fetch(`http://localhost:3005/products/`, {
+    const res = await fetch(`/products`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json; charset=utf-8'

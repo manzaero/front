@@ -1,81 +1,93 @@
-import styled from "styled-components";
-import {useDispatch, useSelector} from "react-redux";
-import {productImages} from "../../assets/product-image/index.js";
-import {addToCart, productById} from "../../action/index.js";
-import {useUserRole} from "../../constants/index.js";
-import {useParams} from "react-router-dom";
-import {useEffect} from "react";
-import {selectProduct} from "../../selectors/index.js";
+import styled from 'styled-components';
+import { useDispatch, useSelector } from 'react-redux';
+import { productImages } from '../../assets/product-image/index.js';
+import { addToCart, productById } from '../../action/index.js';
+import { useUserRole } from '../../constants/index.js';
+import { useParams } from 'react-router-dom';
+import { useEffect } from 'react';
+import { selectProduct, selectCart } from '../../selectors/index.js';
+import {sendCartToServer} from "../../bff/api/cart.js";
 
-const ProductContainer = ({className}) => {
-    const selectedProduct = useSelector(selectProduct)
+const ProductContainer = ({ className }) => {
+    const selectedProduct = useSelector(selectProduct);
+    const cart = useSelector(selectCart);
     const dispatch = useDispatch();
-    const userRole = useUserRole()
-    const {id} = useParams()
+    const userRole = useUserRole();
+    const { id } = useParams();
+    const userId = useSelector((state) => state.user.id);
 
     useEffect(() => {
         if (id) {
-            dispatch(productById(id))
+            dispatch(productById(id));
         }
-    }, [dispatch, id])
+    }, [dispatch, id]);
 
     if (
         !selectedProduct ||
+        !selectedProduct.selectedProduct ||
         Array.isArray(selectedProduct.selectedProduct) ||
-        !selectedProduct.selectedProduct.image_url
+        !selectedProduct.selectedProduct.imageUrl
     ) {
         return <div>Product not found</div>;
     }
-    const image = productImages[selectedProduct.selectedProduct.image_url.replace('.png', '')]
 
-    console.log(selectedProduct)
+    const image = productImages[selectedProduct.selectedProduct.imageUrl.replace('.png', '')];
 
-    const addProductToCart = () => {
-        dispatch(addToCart({
+    const addProductToCart = async () => {
+        const productToAdd = {
             id: selectedProduct.selectedProduct.id,
             name: selectedProduct.selectedProduct.name,
             price: selectedProduct.selectedProduct.price,
-            image_url: selectedProduct.selectedProduct.image_url.replace('.png', '')
-        }))
-    }
+            imageUrl: selectedProduct.selectedProduct.imageUrl,
+            quantity: 1,
+        };
+        dispatch(addToCart(productToAdd));
+        if (userId) {
+            const updatedCart = {
+                items: [...(cart.items || []), productToAdd],
+            };
+            await sendCartToServer(userId, updatedCart);
 
+        } else {
+            console.warn('User is not logged in, cannot save cart to server');
+        }
+    };
 
     return (
         <div className={className}>
             <div className="product-img">
-                <img
-                    src={image}
-                    alt="product image"/>
+                <img src={image} alt="product image" />
             </div>
             <div>
                 <div className="title">
                     <p className="product-name">{selectedProduct.selectedProduct.name}</p>
                     <div className="product-stock">
                         <p className="product-price">$ {selectedProduct.selectedProduct.price}.00</p>
-                        <p className="product-in-stock">In
-                            stock: {selectedProduct.selectedProduct.count}</p>
+                        <p className="product-in-stock">
+                            In stock: {selectedProduct.selectedProduct.count}
+                        </p>
                     </div>
                 </div>
                 <div className="hr"></div>
                 <div className="title-description">
                     <div className="description-title">Short Description:</div>
                     <div className="description-text">
-                        {selectedProduct.selectedProduct.product_description}
+                        {selectedProduct.selectedProduct.productDescription}
                     </div>
                     <div className="product-buy">
-                        {userRole ?
-                            (<button className="buy-btn"
-                                     onClick={addProductToCart}>Add to
-                                cart
-                            </button>) :
-                            (<p>Please log in to add to cart</p>)
-                        }
+                        {userRole ? (
+                            <button className="buy-btn" onClick={addProductToCart}>
+                                Add to cart
+                            </button>
+                        ) : (
+                            <p>Please log in to add to cart</p>
+                        )}
                     </div>
                 </div>
             </div>
         </div>
-    )
-}
+    );
+};
 
 export const Product = styled(ProductContainer)`
     display: flex;

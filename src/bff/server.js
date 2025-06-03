@@ -61,9 +61,10 @@ export const server = {
             }
         }
     },
-    async loadProducts() {
+    async loadProducts({page = 1, limit = 6, search = ''}) {
         try {
-            const savedProducts = localStorage.getItem("products");
+            const cache = `products_page=${page}_limit=${limit}_search=${search}`
+            const savedProducts = localStorage.getItem(cache);
 
             if (savedProducts) {
                 try {
@@ -74,13 +75,13 @@ export const server = {
                     };
                 } catch (parseError) {
                     console.warn("Ошибка парсинга localStorage, гружу с сервака", parseError);
-                    localStorage.removeItem("products");
+                    localStorage.removeItem(cache);
                 }
             }
 
-            const products = await getProducts();
+            const products = await getProducts({page, limit, search});
 
-            localStorage.setItem("products", JSON.stringify(products));
+            localStorage.setItem(cache, JSON.stringify(products));
 
             return {
                 error: null,
@@ -168,9 +169,10 @@ export const server = {
     },
     async getProduct(id) {
         try {
-            const res = await fetch(`http://localhost:3005/products/${id}`);
+            const res = await fetch(`/products/${id}`);
             if (!res.ok) throw new Error('Product not found');
-            const product = await res.json();
+            const json = await res.json();
+            const product = json.data ? json.data : json
             return {
                 error: null,
                 result: product

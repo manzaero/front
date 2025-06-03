@@ -1,5 +1,5 @@
 export const deleteProduct = async (id) => {
-    return await fetch(`http://localhost:3005/products/${id}`, {
+    return await fetch(`/products/${id}`, {
         method: 'DELETE'
     })
 }

@@ -1,1 +1,1 @@
-export const selectorCartSum = ({cart}) => cart.sum
+export const selectorCartSum = ({cart}) => cart.sum || 0

@@ -47,9 +47,14 @@ store.subscribe(() => {
     const cart = state.cart
     const userId = state.user?.id
 
-    if (userId && JSON.stringify(prevState) !== JSON.stringify(cart)) {
+    if (userId && JSON.stringify(prevState?.cart) !== JSON.stringify(cart)) {
         sendCartToServer(userId, cart)
-            .then(res => logout(res))
-        prevState = cart
+            .then(res => {
+                if (res.error) {
+                    console.error('error to sync cart with server:', res.error);
+                }
+            })
+            .catch(err => console.error('error syncing cart:', err));
+        prevState = { ...state };
     }
 })

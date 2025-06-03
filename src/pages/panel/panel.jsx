@@ -7,6 +7,7 @@ import {useDispatch, useSelector} from "react-redux";
 import {selectCategories, selectLoadProducts} from "../../selectors/index.js";
 import {productImages} from "../../assets/product-image/index.js";
 import {icons} from "../../assets/icon/index.js";
+import {request} from "../../utils/request.js";
 
 
 const AdminPanelContainer = ({className}) => {
@@ -15,11 +16,12 @@ const AdminPanelContainer = ({className}) => {
     const dispatch = useDispatch();
     const products = useSelector(selectLoadProducts)
     const categories = useSelector(selectCategories);
+
     const [changeProduct, setChangeProduct] = useState({});
     const [newProduct, setNewProduct] = useState({
         name: '',
         category: '',
-        image_url: '',
+        imageUrl: '',
         price: "",
         count: "",
         product_description: ''
@@ -58,17 +60,48 @@ const AdminPanelContainer = ({className}) => {
         }))
     }
 
+    useEffect(() => {
+        request('/products', 'GET').then(({error, result}) => {
+            setLoadingProducts(false)
+            if (error) {
+                setErrorLoadProducts(`product loading error: ${error}`);
+                return;
+            }
+
+            const products = result.products
+            if (Array.isArray(products)) {
+                dispatch(loadProducts(products));
+            } else {
+                console.error("data structure:", result);
+            }
+        });
+        request('/categories', 'GET').then(({error, result}) => {
+            setLoadingCategory(false)
+            if (error) {
+                setErrorLoadCategory('error load products')
+                return
+            }
+
+            const categories = result.data
+            if (Array.isArray(categories)) {
+                dispatch(loadCategories(categories));
+            } else {
+                console.error("category structure:", result);
+            }
+        })
+    }, [dispatch])
+
     const handleAddProduct = async (e) => {
         e.preventDefault();
         const {
             name,
             category,
-            image_url,
+            imageUrl,
             price,
             count,
             product_description
         } = newProduct
-        if (!name || !category || !image_url || !price || !count || !
+        if (!name || !category || !imageUrl || !price || !count || !
             product_description) {
             console.log('not data fields')
             return
@@ -93,7 +126,7 @@ const AdminPanelContainer = ({className}) => {
         setNewProduct({
             name: '',
             category: '',
-            image_url: '',
+            imageUrl: '',
             price: '',
             count: '',
             product_description: ''
@@ -101,32 +134,7 @@ const AdminPanelContainer = ({className}) => {
     }
 
 
-    useEffect(() => {
-        server.loadProducts().then(({error, result}) => {
-            setLoadingProducts(false)
-            if (error) {
-                setErrorLoadProducts(`product loading error: ${error}`);
-                return;
-            }
-            if (Array.isArray(result)) {
-                dispatch(loadProducts(result));
-            } else {
-                console.error("data structure:", result);
-            }
-        });
-        server.loadCategories().then(({error, result}) => {
-            setLoadingCategory(false)
-            if (error) {
-                setErrorLoadCategory('error load products')
-                return
-            }
-            if (Array.isArray(result)) {
-                dispatch(loadCategories(result));
-            } else {
-                console.error("category structure:", result);
-            }
-        })
-    }, [dispatch])
+
 
     const handleDeleteProduct = async (id) => {
         const {error} = await server.removeProduct(id);
@@ -157,15 +165,15 @@ const AdminPanelContainer = ({className}) => {
                 >
                     <option value="">Select category</option>
                     {categories.map(cat => (
-                        <option key={cat.id} value={cat.category}>
+                        <option key={cat._id} value={cat.category}>
                             {cat.name}
                         </option>
                     ))}
                 </select>
                 <input type="text"
-                       value={newProduct.image_url}
+                       value={newProduct.imageUrl}
                        placeholder="Product image"
-                       onChange={e => handleProductChange("image_url", e.target.value)}
+                       onChange={e => handleProductChange("imageUrl", e.target.value)}
                 />
                 <input type="text"
                        value={newProduct.price}
@@ -173,7 +181,7 @@ const AdminPanelContainer = ({className}) => {
                        onChange={e => handleProductChange("price", e.target.value)}
                 />
                 <input type="text"
-                       value={newProduct.product_description}
+                       value={newProduct.productDescription}
                        placeholder="Product description"
                        className='description_input'
                        onChange={e => handleProductChange("product_description", e.target.value)}
@@ -214,7 +222,7 @@ const AdminPanelContainer = ({className}) => {
                                     <td>
                                         <div className="product-info">
                                             <img
-                                                src={productImages[current.image_url.replace('.png', '')]}
+                                                src={productImages[current.imageUrl.replace('.png', '')]}
                                                 alt="item.name"/>
                                             <div>
                                                 <input
@@ -230,7 +238,7 @@ const AdminPanelContainer = ({className}) => {
                                                         {!errorLoadCategory ?
                                                             categories.map((category) => (
                                                                 <option
-                                                                    key={category.id}
+                                                                    key={category._id}
                                                                     value={category.category}>
                                                                     {category.name}
                                                                 </option>
@@ -241,8 +249,8 @@ const AdminPanelContainer = ({className}) => {
                                                 <p className="sku">
                                                     <span>Image</span>:
                                                     <select
-                                                        value={current.image_url}
-                                                        onChange={e => handleChange(item.id, "image_url", e.target.value)}
+                                                        value={current.imageUrl}
+                                                        onChange={e => handleChange(item.id, "imageUrl", e.target.value)}
                                                     >
                                                         {Object.keys(productImages).map((imgKey) => (
                                                             <option key={imgKey}

@@ -15,6 +15,7 @@ import {countProductsByCategory, useLoadData} from "../../hooks/index.js";
 
 const MainContainer = ({className}) => {
     const dispatch = useDispatch();
+    const lastPage = useSelector(state => state.products.lastPage)
     const searchProduct = useSelector(selectSearchProduct);
     const setCategory = useSelector(selectCategory);
     const [sortToggled, setSortToggle] = useState('reset');
@@ -23,7 +24,8 @@ const MainContainer = ({className}) => {
     const productCount = countProductsByCategory(products)
     const [loadingProducts, setLoadingProducts] = useState(true);
     const [loadingCategories, setLoadingCategories] = useState(true);
-
+    const limit = 9
+    const [currentPage, setCurrentPage] = useState(1);
 
     const filteredProducts = Array.isArray(products) ? products.filter(product => {
         return (
@@ -40,7 +42,9 @@ const MainContainer = ({className}) => {
         setLoadingCategories,
         setLoadingProducts,
         setErrorLoadProducts,
-        setErrorLoadCategories
+        setErrorLoadCategories,
+        page: currentPage, limit,
+        search: searchProduct
     })
 
     const sortedProducts = [...filteredProducts]
@@ -76,13 +80,13 @@ const MainContainer = ({className}) => {
                         <p>Categories</p>
                         <ul>
                             {categories.map((item) => (
-                                <li className="active" key={item.id}
+                                <li className="active" key={item._id}
                                     onClick={() => handleCategories(item.category)}>
                                     <span>{item.name}</span>
                                     <span>{productCount[item.category] || 0}</span>
                                 </li>
                             ))}
-                            <li className="active"
+                            <li className="active" key="all-categories"
                                 onClick={() => dispatch(setCategories(null))}>
                                 <span>All categories</span>
                             </li>
@@ -107,7 +111,7 @@ const MainContainer = ({className}) => {
                                           className="card"
                                           key={item.id}>
                                         <img
-                                            src={productImages[item.image_url.replace('.png', '')]}
+                                            src={productImages[item.imageUrl.replace('.png', '')]}
                                             alt={item.name}/>
                                         <div className="product-description">
                                             <div
@@ -120,6 +124,15 @@ const MainContainer = ({className}) => {
                                 ))}
                             </div>
                         )}
+                        <div className="pagination">
+                            <button onClick={() => setCurrentPage(p => p - 1)}
+                                    disabled={currentPage === 1}>← Prev
+                            </button>
+                            <span>Page {currentPage} of {lastPage}</span>
+                            <button onClick={() => setCurrentPage(p => p + 1)}
+                                    disabled={currentPage === lastPage}>Next →
+                            </button>
+                        </div>
                     </div>
                 </>
             )}
@@ -185,5 +198,41 @@ export const Main = styled(MainContainer)`
             box-shadow: 0px 4px 10px rgba(0, 0, 0, 0.15);
             border-top: 1px solid #46A358;
         }
+        .pagination {
+            margin-top: 100px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 16px;
+            font-weight: 300;
+            font-size: 16px;
+            color: #333;
+        }
+
+        .pagination button {
+            background-color: #46A358;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+
+        .pagination button:disabled {
+            background-color: #ccc;
+            cursor: default;
+            color: #666;
+        }
+
+        .pagination button:not(:disabled):hover {
+            background-color: #3a8c49;
+        }
+
+        .pagination span {
+            min-width: 100px;
+            text-align: center;
+        }
+
     }
 `

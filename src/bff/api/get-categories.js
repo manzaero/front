@@ -1,1 +1,1 @@
-export const getCategories = () => fetch('http://localhost:3005/categories').then(res => res.json())
+export const getCategories = () => fetch('/categories').then(res => res.json())
