@@ -3,7 +3,7 @@ import {request} from "../utils/request.js";
 
 export const logout = () => async (dispatch) => {
     localStorage.removeItem("cart");
-    await request('/logout', 'POST')
+    await request('http://localhost:3001/api/logout', 'POST')
     dispatch({
         type: ACTION_TYPE.LOGOUT,
     })

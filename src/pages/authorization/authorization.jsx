@@ -43,28 +43,22 @@ const AuthorizationContainer = ({className}) => {
     const [serverError, setServerError] = useState(null)
 
     const onSubmit = ({email, password}) => {
-        request('/login', 'POST', {email, password})
+        request('http://localhost:3001/api/login', 'POST', {email, password})
             .then(({error, result}) => {
-                console.log(result)
                 if (error) {
                     setServerError(`Error request: ${error}`);
                     return;
                 }
                 const user = result.user
 
-                console.log('USER OBJECT:', user);
-                console.log('user.id:', user.id);
-
                 localStorage.setItem('userId', user.id)
-
-                console.log('SAVED userId:', localStorage.getItem('userId'));
 
 
                 dispatch(setUser({
                     id: user.id,
                     login: user.name,
                     email: user.email,
-                    roleId: user.role,
+                    roleId: Number(user.roleId),
                 }))
                 nav('/')
             })

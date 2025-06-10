@@ -1,15 +1,18 @@
 import styled from 'styled-components';
 import { useDispatch, useSelector } from 'react-redux';
 import { productImages } from '../../assets/product-image/index.js';
-import { addToCart, productById } from '../../action/index.js';
+import {addToCart, fetchProductById} from '../../action/index.js';
 import { useUserRole } from '../../constants/index.js';
 import { useParams } from 'react-router-dom';
 import { useEffect } from 'react';
-import { selectProduct, selectCart } from '../../selectors/index.js';
-import {sendCartToServer} from "../../bff/api/cart.js";
+import {
+    selectCart, selectProduct, productNotFound
+} from '../../selectors/index.js';
+import { sendCartToServer } from '../../bff/api/cart.js';
 
 const ProductContainer = ({ className }) => {
     const selectedProduct = useSelector(selectProduct);
+    const notFound = useSelector(productNotFound);
     const cart = useSelector(selectCart);
     const dispatch = useDispatch();
     const userRole = useUserRole();
@@ -18,36 +21,36 @@ const ProductContainer = ({ className }) => {
 
     useEffect(() => {
         if (id) {
-            dispatch(productById(id));
+            dispatch(fetchProductById(id));
         }
     }, [dispatch, id]);
 
-    if (
-        !selectedProduct ||
-        !selectedProduct.selectedProduct ||
-        Array.isArray(selectedProduct.selectedProduct) ||
-        !selectedProduct.selectedProduct.imageUrl
-    ) {
+    if (notFound) {
         return <div>Product not found</div>;
     }
 
-    const image = productImages[selectedProduct.selectedProduct.imageUrl.replace('.png', '')];
+    if (!selectedProduct) {
+        return <div>Loading...</div>;
+    }
+
+    const imageKey = selectedProduct.imageUrl?.replace('.png', '');
+    const image = productImages[imageKey];
 
     const addProductToCart = async () => {
         const productToAdd = {
-            id: selectedProduct.selectedProduct.id,
-            name: selectedProduct.selectedProduct.name,
-            price: selectedProduct.selectedProduct.price,
-            imageUrl: selectedProduct.selectedProduct.imageUrl,
+            id: selectedProduct.id,
+            name: selectedProduct.name,
+            price: selectedProduct.price,
+            imageUrl: selectedProduct.imageUrl,
             quantity: 1,
         };
         dispatch(addToCart(productToAdd));
+
         if (userId) {
             const updatedCart = {
                 items: [...(cart.items || []), productToAdd],
             };
             await sendCartToServer(userId, updatedCart);
-
         } else {
             console.warn('User is not logged in, cannot save cart to server');
         }
@@ -60,11 +63,11 @@ const ProductContainer = ({ className }) => {
             </div>
             <div>
                 <div className="title">
-                    <p className="product-name">{selectedProduct.selectedProduct.name}</p>
+                    <p className="product-name">{selectedProduct.name}</p>
                     <div className="product-stock">
-                        <p className="product-price">$ {selectedProduct.selectedProduct.price}.00</p>
+                        <p className="product-price">$ {selectedProduct.price}.00</p>
                         <p className="product-in-stock">
-                            In stock: {selectedProduct.selectedProduct.count}
+                            In stock: {selectedProduct.count}
                         </p>
                     </div>
                 </div>
@@ -72,7 +75,7 @@ const ProductContainer = ({ className }) => {
                 <div className="title-description">
                     <div className="description-title">Short Description:</div>
                     <div className="description-text">
-                        {selectedProduct.selectedProduct.productDescription}
+                        {selectedProduct.productDescription}
                     </div>
                     <div className="product-buy">
                         {userRole ? (

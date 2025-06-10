@@ -18,6 +18,7 @@ const ControlPanelContainer = ({className}) => {
     const login = useSelector(selectUserName);
     const dispatch = useDispatch();
 
+
     const items = Array.isArray(cart) ? cart : cart?.items ?? [];
 
     const {value, onChange} = useDebounceInput((e) => {

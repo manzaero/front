@@ -7,7 +7,7 @@ export const checkoutCart = () => async (dispatch, getState) => {
         return
     }
     try {
-        const response = await fetch('/checkout', {
+        const response = await fetch('/api/checkout', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json'

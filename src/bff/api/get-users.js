@@ -1,3 +1,3 @@
 export const getUsers = () =>
-    fetch('/users')
+    fetch('/api/users')
         .then(loadedUsers => loadedUsers.json())

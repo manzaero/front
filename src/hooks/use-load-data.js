@@ -8,7 +8,7 @@ export const useLoadData = (dispatch, {
     setErrorLoadProducts,
     setErrorLoadCategories,
     page = 1,
-    limit = 6,
+    limit = 3,
     search = '',
 }) => {
     useEffect(() => {

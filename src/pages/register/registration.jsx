@@ -55,20 +55,30 @@ const RegistrationContainer = ({className}) => {
 
     const onSubmit = ({login, email, password}) => {
         dispatch({type: ACTION_TYPE.CLEAR_CART})
-        request('/register', 'POST', {name: login, email, password})
-            .then(({error, user}) => {
-                console.log(user)
-                if (error) {
-                    setServerError(`Error request: ${error}`);
+        request('http://localhost:3001/api/register', 'POST', {name: login, email, password})
+            .then((res) => {
+                if (res.error) {
+                    setServerError(res.error);
                     return;
                 }
+
+                const user = res.user;
+
+                if (!user) {
+                    setServerError('Registration failed: user already exists');
+                    return;
+                }
+
+                localStorage.setItem('userId', user.id);
+
                 dispatch(setUser({
-                    id: user._id,
+                    id: user.id,
                     login: user.name,
                     email: user.email,
-                    roleId: user.role,
-                }))
-                nav('/')
+                    roleId: Number(user.roleId),
+                }));
+
+                nav('/');
             })
 
     }

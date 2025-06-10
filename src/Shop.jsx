@@ -34,6 +34,7 @@ export const Shop = () => {
                 <Routes>
                     <Route path="/" element={<Main/>}/>
                     <Route path="/product/:id" element={<Product/>}/>
+                    <Route path="/product" element={<div>Выберите товар</div>} />
                     <Route path="/cart" element={<Cart/>}/>
                     <Route path="/signin" element={<Authorization/>}/>
                     <Route path="/signup" element={<Registration/>}/>

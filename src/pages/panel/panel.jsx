@@ -8,6 +8,7 @@ import {selectCategories, selectLoadProducts} from "../../selectors/index.js";
 import {productImages} from "../../assets/product-image/index.js";
 import {icons} from "../../assets/icon/index.js";
 import {request} from "../../utils/request.js";
+import {deleteProduct} from "../../action/delete-product.js";
 
 
 const AdminPanelContainer = ({className}) => {
@@ -22,8 +23,8 @@ const AdminPanelContainer = ({className}) => {
         name: '',
         category: '',
         imageUrl: '',
-        price: "",
-        count: "",
+        price: '',
+        count: '',
         product_description: ''
     });
     const [loadingProducts, setLoadingProducts] = useState(true);
@@ -45,7 +46,18 @@ const AdminPanelContainer = ({className}) => {
         if (!updatedProduct) {
             return;
         }
-        const {error} = await server.changeProduct(id, updatedProduct)
+
+        const product = {
+            name: updatedProduct.name,
+            image_url: updatedProduct.imageUrl,
+            productDescription: updatedProduct.product_description,
+            count: updatedProduct.count,
+            price: updatedProduct.price,
+            category: updatedProduct.category
+        };
+
+        const {error} = await server.changeProduct(id, product)
+
         if (error) {
             console.log("error saving product", error)
         } else {
@@ -61,7 +73,7 @@ const AdminPanelContainer = ({className}) => {
     }
 
     useEffect(() => {
-        request('/products', 'GET').then(({error, result}) => {
+        request('http://localhost:3001/api/products', 'GET').then(({error, result}) => {
             setLoadingProducts(false)
             if (error) {
                 setErrorLoadProducts(`product loading error: ${error}`);
@@ -75,7 +87,7 @@ const AdminPanelContainer = ({className}) => {
                 console.error("data structure:", result);
             }
         });
-        request('/categories', 'GET').then(({error, result}) => {
+        request('http://localhost:3001/api/categories', 'GET').then(({error, result}) => {
             setLoadingCategory(false)
             if (error) {
                 setErrorLoadCategory('error load products')
@@ -93,34 +105,34 @@ const AdminPanelContainer = ({className}) => {
 
     const handleAddProduct = async (e) => {
         e.preventDefault();
-        const {
-            name,
-            category,
-            imageUrl,
-            price,
-            count,
-            product_description
-        } = newProduct
-        if (!name || !category || !imageUrl || !price || !count || !
-            product_description) {
+        const { name, category, imageUrl, price, count, product_description } = newProduct;
+
+        if (!name || !category || !imageUrl || !price || !count || !product_description) {
             console.log('not data fields')
             return
         }
         const newItem = {
-            ...newProduct,
+            name,
+            image_url: imageUrl,
+            product_description,
             price: +price,
-            count: +count
+            count: +count,
+            category
+        };
+
+        if (!newItem.image_url) {
+            console.error("image_url is missing:", newItem);
+            return;
         }
-        console.log(newItem)
-        const {error, result} = await server.addProduct(newItem)
+
+        const { error, result } = await server.addProduct(newItem);
 
         if (error) {
-            console.log('err add product')
+            console.log('err add product', error);
         } else if (result && result.id) {
-            console.log(newProduct)
-            dispatch(addProduct(result))
+            dispatch(addProduct(result));
         } else {
-            console.log('adding prod', result)
+            console.log('adding prod failed:', result);
         }
 
         setNewProduct({
@@ -130,8 +142,9 @@ const AdminPanelContainer = ({className}) => {
             price: '',
             count: '',
             product_description: ''
-        })
-    }
+        });
+    };
+
 
 
 
@@ -139,13 +152,10 @@ const AdminPanelContainer = ({className}) => {
     const handleDeleteProduct = async (id) => {
         const {error} = await server.removeProduct(id);
         if (error) {
-            console.log(error)
+            console.error(error)
             return
-        } else {
-            console.log('deleting successfully')
-            dispatch(loadProducts(products.filter(p => p.id !== id)))
         }
-
+        dispatch(deleteProduct(id));
     }
 
     return (
@@ -181,7 +191,7 @@ const AdminPanelContainer = ({className}) => {
                        onChange={e => handleProductChange("price", e.target.value)}
                 />
                 <input type="text"
-                       value={newProduct.productDescription}
+                       value={newProduct.product_description}
                        placeholder="Product description"
                        className='description_input'
                        onChange={e => handleProductChange("product_description", e.target.value)}

@@ -24,7 +24,7 @@ const MainContainer = ({className}) => {
     const productCount = countProductsByCategory(products)
     const [loadingProducts, setLoadingProducts] = useState(true);
     const [loadingCategories, setLoadingCategories] = useState(true);
-    const limit = 9
+    const limit = 4
     const [currentPage, setCurrentPage] = useState(1);
 
     const filteredProducts = Array.isArray(products) ? products.filter(product => {
@@ -44,8 +44,10 @@ const MainContainer = ({className}) => {
         setErrorLoadProducts,
         setErrorLoadCategories,
         page: currentPage, limit,
-        search: searchProduct
+        search: searchProduct,
+        category: setCategory,
     })
+
 
     const sortedProducts = [...filteredProducts]
     if (sortToggled === 'descending') {

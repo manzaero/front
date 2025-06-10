@@ -14,10 +14,13 @@ export const productsReducer = (state = initialProductsState, action) => {
             }
         case ACTION_TYPE.ADD_PRODUCT:
             return {
-                ...state, items: [
-                    ...state.items,
-                    ...action.payload
-                ]
+                ...state,
+                items: [...state.items, action.payload],
+            }
+        case ACTION_TYPE.DELETE_PRODUCT:
+            return {
+                ...state,
+                items: state.items.filter(product => product.id !== action.payload)
             }
         default:
             return state

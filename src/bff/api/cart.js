@@ -14,7 +14,7 @@ export const sendCartToServer = async (userId, cart) => {
 
         };
 
-        const res = await fetch(`/cart/${userId}`, {
+        const res = await fetch(`http://localhost:3001/api/cart/${userId}`, {
             method: 'PUT',
             credentials: 'include',
             headers: {

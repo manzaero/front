@@ -14,10 +14,6 @@ const LinksContainer = ({className}) => {
                          className={({isActive}) => (isActive ? 'active' : '')}>Home</NavLink>
                 <NavLink to='/product'
                          className={({isActive}) => (isActive ? 'active' : '')}>Product</NavLink>
-                <NavLink to='/test'
-                         className={({isActive}) => (isActive ? 'active' : '')}>Care</NavLink>
-                <NavLink to='/test2'
-                         className={({isActive}) => (isActive ? 'active' : '')}>Blogs</NavLink>
                 {Number(userRole) === ROLE.ADMIN ? (
                     <NavLink to='/admin'
                              className={({isActive}) => (isActive ? 'active' : '')}>Admin</NavLink>

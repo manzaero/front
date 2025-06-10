@@ -11,13 +11,11 @@ import {
     usersReducer
 } from './reducers'
 import {sendCartToServer} from "./bff/api/input.js";
-import {logout} from "./action/index.js";
 
 const loadingState = () => {
     const realizingState = localStorage.getItem('initialUsersState');
     return realizingState ? JSON.parse(realizingState) : undefined;
 }
-
 const saveState = (state) => {
     const realizingState = JSON.stringify(state)
     localStorage.setItem('initialUsersState', realizingState)

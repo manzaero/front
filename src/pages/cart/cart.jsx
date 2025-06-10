@@ -19,7 +19,6 @@ const CartContainer = ({ className }) => {
     const cart = useSelector(selectCart);
     const sum = useSelector(selectorCartSum);
 
-    console.log(cart)
 
     const items = Array.isArray(cart?.items) ? cart.items : [];
 
@@ -43,7 +42,7 @@ const CartContainer = ({ className }) => {
         }
 
         async function loadCart() {
-            const { error, result } = await request('/cart', 'GET');
+            const { error, result } = await request('http://localhost:3001/api/cart', 'GET');
             if (error) {
                 console.error('loading cart', error);
                 return;
@@ -77,7 +76,6 @@ const CartContainer = ({ className }) => {
                     {
                         items.length !== 0 ? items.map((item) => (
                             <tr className="product-data" key={item.id}>
-                                {console.log(item.id)}
                                 <td className="product">
                                     <img
                                         src={productImages[item.imageUrl?.replace('.png', '')] || ''}

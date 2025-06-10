@@ -61,9 +61,9 @@ export const server = {
             }
         }
     },
-    async loadProducts({page = 1, limit = 6, search = ''}) {
+    async loadProducts({ page = 1, limit = 6, search = '', category = '' }) {
         try {
-            const cache = `products_page=${page}_limit=${limit}_search=${search}`
+            const cache = `products_page=${page}_limit=${limit}_search=${search}`;
             const savedProducts = localStorage.getItem(cache);
 
             if (savedProducts) {
@@ -74,18 +74,26 @@ export const server = {
                         result: parsed
                     };
                 } catch (parseError) {
-                    console.warn("Ошибка парсинга localStorage, гружу с сервака", parseError);
+                    console.warn("Ошибка парсинга localStorage, загружаю с сервера", parseError);
                     localStorage.removeItem(cache);
                 }
             }
 
-            const products = await getProducts({page, limit, search});
+            const response = await getProducts({ page, limit, search, category });
 
-            localStorage.setItem(cache, JSON.stringify(products));
+            if (response.error === 'no token') {
+                console.warn("Токен отсутствует, требуется аутентификация");
+                return {
+                    error: "Требуется аутентификация",
+                    result: null
+                };
+            }
+
+            localStorage.setItem(cache, JSON.stringify(response));
 
             return {
                 error: null,
-                result: products
+                result: response
             };
         } catch (e) {
             return {
@@ -94,6 +102,7 @@ export const server = {
             };
         }
     },
+
     async loadCategories() {
         try {
             const categories = await getCategories();
@@ -127,23 +136,18 @@ export const server = {
         localStorage.removeItem("products");
         try {
             const res = await createProduct(product)
-
             return {
                 error: null,
-                result: {
-                    id: res.id,
-                    name: res.name,
-                    image_url: res.image_url,
-                    product_description: res.product_description,
-                    count: res.count,
-                    price: res.price,
-                    category: res.category
-                }
+                result: res.data
             }
         } catch (e) {
-            console.log(e.message)
+            console.error('Ошибка создания продукта:', e.message);
+            if (e.response) {
+                const data = await e.response.json();
+                console.error('Ответ сервера:', data);
+            }
             return {
-                e,
+                error: e,
                 result: null
             }
         }
@@ -169,7 +173,7 @@ export const server = {
     },
     async getProduct(id) {
         try {
-            const res = await fetch(`/products/${id}`);
+            const res = await fetch(`http://localhost:3001/api/products/${id}`);
             if (!res.ok) throw new Error('Product not found');
             const json = await res.json();
             const product = json.data ? json.data : json

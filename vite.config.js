@@ -7,30 +7,11 @@ export default defineConfig({
   server: {
     historyApiFallback: true,
     proxy: {
-      '/products': {
+      '/api': {
         target: 'http://localhost:3001',
         changeOrigin: true,
+        rewrite: (path) => path.replace(/^\/api/, ''),
       },
-      '/categories': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      '/register': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      '/logout': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      '/login': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      },
-      '/cart': {
-        target: 'http://localhost:3001',
-        changeOrigin: true,
-      }
-    }
+    },
   }
 })

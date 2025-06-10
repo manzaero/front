@@ -1,14 +1,16 @@
-import {server} from "../bff/index.js";
-import {selectedProducts} from "./selected-products.js";
+import { server } from "../bff/index.js";
+import { ACTION_TYPE } from "../action/index.js";
 
-export const productById = (id) => async (dispatch) => {
+export const fetchProductById = (id) => async (dispatch) => {
     try {
-        const {error, result} = await server.getProduct(id)
-        if (error) {
-            throw new Error(error.message)
+        const { error, result } = await server.getProduct(id);
+        if (error || !result) {
+            dispatch({ type: ACTION_TYPE.PRODUCT_NOT_FOUND });
+        } else {
+            dispatch({ type: ACTION_TYPE.SELECT_PRODUCT, payload: result });
         }
-        dispatch(selectedProducts(result))
     } catch (e) {
-        console.log(e)
+        console.error(e);
+        dispatch({ type: ACTION_TYPE.PRODUCT_NOT_FOUND });
     }
-}
+};
