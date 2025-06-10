@@ -53,19 +53,19 @@ const RegistrationContainer = ({className}) => {
 
     useResetForm(reset)
 
-    const onSubmit = ({login, email, password}) => {
-        dispatch({type: ACTION_TYPE.CLEAR_CART})
-        request('http://localhost:3001/api/register', 'POST', {name: login, email, password})
+    const onSubmit = ({ login, email, password }) => {
+        dispatch({ type: ACTION_TYPE.CLEAR_CART });
+        request('http://localhost:3001/api/register', 'POST', { name: login, email, password })
             .then((res) => {
                 if (res.error) {
                     setServerError(res.error);
                     return;
                 }
 
-                const user = res.user;
+                const user = res.result.user;
 
                 if (!user) {
-                    setServerError('Registration failed: user already exists');
+                    setServerError(res.error || 'Registration failed: no user data returned');
                     return;
                 }
 
@@ -80,8 +80,10 @@ const RegistrationContainer = ({className}) => {
 
                 nav('/');
             })
-
-    }
+            .catch((error) => {
+                setServerError('Registration failed: ' + error.message);
+            });
+    };
 
     const formError = errors?.login?.message || errors?.email?.message || errors?.password?.message || errors?.repeatPassword?.message;
     const errorMessage = formError || serverError;

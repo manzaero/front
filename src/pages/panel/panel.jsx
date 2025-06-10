@@ -1,7 +1,6 @@
 import styled from "styled-components";
 import {Button, Loader, Title} from "../../components/index.js";
 import {useEffect, useState} from "react";
-import {server} from "../../bff/index.js";
 import {addProduct, loadCategories, loadProducts} from "../../action/index.js";
 import {useDispatch, useSelector} from "react-redux";
 import {selectCategories, selectLoadProducts} from "../../selectors/index.js";
@@ -56,7 +55,7 @@ const AdminPanelContainer = ({className}) => {
             category: updatedProduct.category
         };
 
-        const {error} = await server.changeProduct(id, product)
+        const {error} = await request(`http://localhost:3001/api/products/${id}`, 'PATCH', product)
 
         if (error) {
             console.log("error saving product", error)

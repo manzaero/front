@@ -10,7 +10,7 @@ import {
     userReducer,
     usersReducer
 } from './reducers'
-import {sendCartToServer} from "./bff/api/input.js";
+import {sendCartToServer} from "./action/cart.js";
 
 const loadingState = () => {
     const realizingState = localStorage.getItem('initialUsersState');

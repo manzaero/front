@@ -8,7 +8,7 @@ import { useEffect } from 'react';
 import {
     selectCart, selectProduct, productNotFound
 } from '../../selectors/index.js';
-import { sendCartToServer } from '../../bff/api/cart.js';
+import { sendCartToServer } from '../../action/cart.js';
 
 const ProductContainer = ({ className }) => {
     const selectedProduct = useSelector(selectProduct);
