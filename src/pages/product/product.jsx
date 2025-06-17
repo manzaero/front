@@ -83,7 +83,7 @@ const ProductContainer = ({ className }) => {
                                 Add to cart
                             </button>
                         ) : (
-                            <p>Please log in to add to cart</p>
+                            <p>Please LogIn to add to cart</p>
                         )}
                     </div>
                 </div>
