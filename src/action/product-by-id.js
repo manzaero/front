@@ -3,7 +3,7 @@ import { request } from "../utils/request.js";
 
 export const fetchProductById = (id) => async (dispatch) => {
     try {
-        const { error, result } = await request(`http://localhost:3001/api/products/${id}`);
+        const { error, result } = await request(`/api/products/${id}`);
 
         if (error || !result?.data) {
             dispatch({ type: ACTION_TYPE.PRODUCT_NOT_FOUND });

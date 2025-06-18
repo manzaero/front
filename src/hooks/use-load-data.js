@@ -12,7 +12,7 @@ export const useLoadData = (dispatch, {
     search = '',
 }) => {
     useEffect(() => {
-        request(`http://localhost:3001/api/products?page=${page}&limit=${limit}&search=${search}`)
+        request(`/api/products?page=${page}&limit=${limit}&search=${search}`)
             .then(({ error, result }) => {
                 if (error) {
                     setErrorLoadProducts(`Product loading error: ${error}`);
@@ -29,7 +29,7 @@ export const useLoadData = (dispatch, {
                 setLoadingProducts(false);
             });
 
-        request('http://localhost:3001/api/categories')
+        request('/api/categories')
             .then(({ error, result }) => {
                 if (error) {
                     setErrorLoadCategories(`Categories loading error: ${error}`);

@@ -55,7 +55,7 @@ const AdminPanelContainer = ({className}) => {
             category: updatedProduct.category
         };
 
-        const {error} = await request(`http://localhost:3001/api/products/${id}`, 'PATCH', product)
+        const {error} = await request(`/api/products/${id}`, 'PATCH', product)
 
         if (error) {
             console.log("error saving product", error)
@@ -72,7 +72,7 @@ const AdminPanelContainer = ({className}) => {
     }
 
     useEffect(() => {
-        request('http://localhost:3001/api/products', 'GET').then(({error, result}) => {
+        request('/api/products', 'GET').then(({error, result}) => {
             setLoadingProducts(false)
             if (error) {
                 setErrorLoadProducts(`product loading error: ${error}`);
@@ -86,7 +86,7 @@ const AdminPanelContainer = ({className}) => {
                 console.error("data structure:", result);
             }
         });
-        request('http://localhost:3001/api/categories', 'GET').then(({error, result}) => {
+        request('/api/categories', 'GET').then(({error, result}) => {
             setLoadingCategory(false)
             if (error) {
                 setErrorLoadCategory('error load products')

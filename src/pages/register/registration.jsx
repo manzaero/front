@@ -55,7 +55,7 @@ const RegistrationContainer = ({className}) => {
 
     const onSubmit = ({ login, email, password }) => {
         dispatch({ type: ACTION_TYPE.CLEAR_CART });
-        request('http://localhost:3001/api/register', 'POST', { name: login, email, password })
+        request('/api/register', 'POST', { name: login, email, password })
             .then((res) => {
                 if (res.error) {
                     setServerError(res.error);

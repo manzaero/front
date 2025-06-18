@@ -43,7 +43,7 @@ const AuthorizationContainer = ({className}) => {
     const [serverError, setServerError] = useState(null)
 
     const onSubmit = ({email, password}) => {
-        request('http://localhost:3001/api/login', 'POST', {email, password})
+        request('/api/login', 'POST', {email, password})
             .then(({error, result}) => {
                 if (error) {
                     setServerError(`Error request: ${error}`);

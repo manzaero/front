@@ -42,7 +42,7 @@ const CartContainer = ({ className }) => {
         }
 
         async function loadCart() {
-            const { error, result } = await request('http://localhost:3001/api/cart', 'GET');
+            const { error, result } = await request('/api/cart', 'GET');
             if (error) {
                 console.error('loading cart', error);
                 return;

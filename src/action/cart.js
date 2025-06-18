@@ -14,5 +14,5 @@ export const sendCartToServer = async (userId, cart) => {
             : [],
     };
 
-    return await request(`http://localhost:3001/api/cart/${userId}`, 'PUT', cartToSend);
+    return await request(`/api/cart/${userId}`, 'PUT', cartToSend);
 };
